@@ -42,7 +42,8 @@ const formReducer = (state, action) => {
   return state;
 };
 
-const AuthScreen = props => {
+const Auth = props => {
+  
   // Auth states needed in this screen
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
@@ -92,7 +93,7 @@ const AuthScreen = props => {
     setIsLoading(true);
     try {
       await dispatch(action);
-      props.navigation.navigate("Profile");
+      props.navigation.navigate("Create");
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -178,7 +179,7 @@ const AuthScreen = props => {
 };
 
 // Sets header title
-AuthScreen.navigationOptions = {
+Auth.navigationOptions = {
   headerTitle: "Authenticate"
 };
 
@@ -200,4 +201,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default AuthScreen;
+export default Auth;
