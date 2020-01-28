@@ -20,9 +20,9 @@ const Profile = props => {
   const [error, setError] = useState();
 
   const profile = useSelector(state => state.profile.profile);
-
   const dispatch = useDispatch();
 
+  console.log(useSelector(state => state));
   const loadProfile = useCallback(async () => {
     setError(null);
     setIsRefreshing(true);
@@ -60,28 +60,31 @@ const Profile = props => {
     <View style={styles.screen}>
       <Card style={styles.card}>
         <Text>Welcome {profile.name}!</Text>
+        <Text>Bio: {profile.bio}</Text>
         <Button
           title="Logout"
           onPress={() => {
             dispatch(authActions.logout());
           }}
         />
-        <Text>Bio: {profile.bio}</Text>
       </Card>
     </View>
   );
 };
 
 // Sets header title
-Profile.navigationOptions = {
-  headerTitle: () => <Text style={styles.text}>Profile</Text>,
-  headerRight: () => (
-    <FontAwesome5
-      style={styles.text}
-      name={"edit"}
-      onPress={() => alert("This is a button!")}
-    />
-  )
+Profile.navigationOptions = navData => {
+  return {
+    headerRight: () => (
+      <FontAwesome5
+        style={styles.text}
+        name={"edit"}
+        onPress={() => {
+          navData.navigation.navigate("Edit");
+        }}
+      />
+    )
+  };
 };
 
 const styles = StyleSheet.create({

@@ -16,18 +16,10 @@ export const fetchProfiles = () => {
       }
       const resData = await response.json();
 
-      const loadedProfiles = [];
-
-      const profiles = Object.values(resData);
-      for (let i = 0; i < profiles.length; i++) {
-        loadedProfiles.push(
-          new Profile(profiles[i].id, profiles[i].name, profiles[i].bio)
-        );
-      }
       dispatch({
         type: SET_PROFILES,
-        profiles: loadedProfiles,
-        profile: loadedProfiles.filter(profile => profile.id === id)[0]
+        profiles: resData,
+        profile: resData[id]
       });
     } catch (err) {
       throw err;
@@ -40,14 +32,13 @@ export const createProfile = (name, bio) => {
     const token = getState().auth.token;
     const id = getState().auth.userId;
     const response = await fetch(
-      `https://match-day-73a8a.firebaseio.com/profiles.json?auth=${token}`,
+      `https://match-day-73a8a.firebaseio.com/profiles/${id}.json?auth=${token}`,
       {
-        method: "POST",
+        method: "PUT",
         header: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          id,
           name,
           bio
         })
@@ -66,9 +57,10 @@ export const createProfile = (name, bio) => {
   };
 };
 
-export const updateProfile = (id, name, bio) => {
+export const updateProfile = (name, bio) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
+    const id = getState().auth.userId;
     const response = await fetch(
       `https://match-day-73a8a.firebaseio.com/profiles/${id}.json?auth=${token}`,
       {

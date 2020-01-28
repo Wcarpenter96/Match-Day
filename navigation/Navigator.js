@@ -5,6 +5,7 @@ import StartupScreen from "./../screens/Startup";
 import ProfileScreen from "./../screens/Profile";
 import AuthScreen from "./../screens/Auth";
 import CreateProfileScreen from "../screens/Create";
+import EditProfileScreen from "../screens/Edit";
 import Colors from "../constants/Colors";
 
 // set up default navigation options
@@ -15,10 +16,7 @@ const defaultNavOptions = {
   headerTitleStyle: {
     fontFamily: "Helvetica-Bold"
   },
-  headerBackTitleStyle: {
-    fontFamily: "Helvetica"
-  },
-  headerTintColor: Colors.primary
+  headerTintColor: Colors.secondary
 };
 
 // create login navigator
@@ -34,7 +32,8 @@ const AuthNavigator = createStackNavigator(
 // create profile navigator
 const ProfileNavigator = createStackNavigator(
   {
-    Profile: ProfileScreen
+    Profile: ProfileScreen,
+    Edit: EditProfileScreen
   },
   {
     defaultNavigationOptions: defaultNavOptions

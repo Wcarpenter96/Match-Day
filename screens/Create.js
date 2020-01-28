@@ -163,7 +163,7 @@ const CreateProfile = props => {
 CreateProfile.navigationOptions = navData => {
   const submitFn = navData.navigation.getParam("submit");
   return {
-    headerTitle: "Create a new Profile!",
+    headerTitle: "Create a new Profile",
     headerRight: () => (
       <FontAwesome5
         style={styles.text}

@@ -7,8 +7,8 @@ import {
 import Profile from "../../models/profile";
 
 const initialState = {
-  profiles: [],
-  profile: []
+  profiles: {},
+  profile: {}
 };
 
 export default (state = initialState, action) => {
@@ -19,26 +19,26 @@ export default (state = initialState, action) => {
         profile: action.profile
       };
     case CREATE_PROFILE:
-      const newProfile = new Profile(
-        action.profileData.id,
-        action.profileData.name,
-        action.profileData.bio
-      );
+      const newProfile = action.profileData.id;
+      newProfile.name = action.profileData.name;
+      newProfile.bio = action.profileData.bio;
+      newProfiles = { ...state.profiles };
+      newProfiles[id] = newProfile;
       return {
         ...state,
         profile: newProfile,
-        profiles: state.profiles.concat(newProfile)
+        profiles: newProfiles
       };
 
     case UPDATE_PROFILE:
       // Create a new profile
-      const updatedProfile = new Profile(action.id, action.name, action.bio);
+      const updatedProfile = action.profileData.id;
+      updatedProfile.bio = action.profileData.bio;
+      updatedProfile.name = action.profileData.name;
+
       //   Update the profile state from the previous list of profiles
-      const profileIndex = state.profiles.findIndex(
-        profile => profile.id === action.id
-      );
-      const updatedProfiles = [...action.profiles];
-      updatedProfiles[profileIndex] = updatedProfile;
+      const updatedProfiles = { ...action.profiles};
+      updatedProfiles[action.profileData.id] = updatedProfile;
       // Update the profile and profiles states
       return {
         ...state,
