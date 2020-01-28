@@ -43,7 +43,6 @@ const formReducer = (state, action) => {
 };
 
 const Auth = props => {
-  
   // Auth states needed in this screen
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
@@ -93,7 +92,11 @@ const Auth = props => {
     setIsLoading(true);
     try {
       await dispatch(action);
-      props.navigation.navigate("Create");
+      if (isSignup) {
+        props.navigation.navigate("Create");
+      } else {
+        props.navigation.navigate("Profile");
+      }
     } catch (err) {
       setError(err.message);
       setIsLoading(false);

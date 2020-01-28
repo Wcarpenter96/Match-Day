@@ -1,8 +1,8 @@
 class Profile {
     constructor(id, name, bio ){
         this.id = id;
-        this.name = this.name,
-        this.bio = this.bio
+        this.name = name,
+        this.bio = bio
     }
 }
 

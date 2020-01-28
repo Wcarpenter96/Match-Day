@@ -11,23 +11,23 @@ export const fetchProfiles = () => {
       const response = await fetch(
         "https://match-day-73a8a.firebaseio.com/profiles.json"
       );
-
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-
       const resData = await response.json();
+
       const loadedProfiles = [];
 
-      for (const key in resData) {
+      const profiles = Object.values(resData);
+      for (let i = 0; i < profiles.length; i++) {
         loadedProfiles.push(
-          new Profile(resData[key].userId, resData[key].name, resData[key].bio)
+          new Profile(profiles[i].id, profiles[i].name, profiles[i].bio)
         );
       }
       dispatch({
         type: SET_PROFILES,
         profiles: loadedProfiles,
-        profile: loadedProfiles.filter(profile => profile.userId === id)
+        profile: loadedProfiles.filter(profile => profile.id === id)[0]
       });
     } catch (err) {
       throw err;

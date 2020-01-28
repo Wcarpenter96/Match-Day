@@ -1,4 +1,8 @@
-import { UPDATE_PROFILE, SET_PROFILES, CREATE_PROFILE } from "../actions/profile";
+import {
+  UPDATE_PROFILE,
+  SET_PROFILES,
+  CREATE_PROFILE
+} from "../actions/profile";
 
 import Profile from "../../models/profile";
 
@@ -41,6 +45,7 @@ export default (state = initialState, action) => {
         profiles: updatedProfiles,
         profile: updatedProfile
       };
+    default:
+      return state;
   }
-  return state;
 };
