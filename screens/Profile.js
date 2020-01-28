@@ -83,7 +83,7 @@ Profile.navigationOptions = navData => {
           navData.navigation.navigate("Edit");
         }}
       />
-    )
+    ),
   };
 };
 

@@ -83,7 +83,7 @@ const CreateProfile = props => {
           formState.inputValues.bio
         )
       );
-      props.navigation.navigate("Profile");
+      props.navigation.navigate("Home");
     } catch (err) {
       setError(err.message);
     }
