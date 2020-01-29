@@ -22,7 +22,7 @@ const Profile = props => {
   const profile = useSelector(state => state.profile.profile);
   const dispatch = useDispatch();
 
-  console.log(useSelector(state => state));
+  // console.log(useSelector(state => state));
   const loadProfile = useCallback(async () => {
     setError(null);
     setIsRefreshing(true);

@@ -95,7 +95,7 @@ const Auth = props => {
       if (isSignup) {
         props.navigation.navigate("Create");
       } else {
-        props.navigation.navigate("Profile");
+        props.navigation.navigate("Home");
       }
     } catch (err) {
       setError(err.message);

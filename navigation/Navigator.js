@@ -106,6 +106,8 @@ const HomeNavigator = createBottomTabNavigator({
   Profile: ProfileNavigator,
   Match: MatchNavigator,
   Chat: ChatNavigator
+},{
+  initialRouteName: "Match"
 });
 
 // create startup navigator

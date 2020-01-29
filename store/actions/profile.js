@@ -15,10 +15,20 @@ export const fetchProfiles = () => {
         throw new Error("Something went wrong!");
       }
       const resData = await response.json();
+      const rawProfiles = Object.entries(resData);
+      const profiles = [];
+      for (let i = 0; i < rawProfiles.length; i++) {
+        const newProfile = new Profile(
+          rawProfiles[i][0],
+          rawProfiles[i][1].name,
+          rawProfiles[i][1].bio
+        );
+        profiles.push(newProfile);
+      }
 
       dispatch({
         type: SET_PROFILES,
-        profiles: resData,
+        profiles: profiles,
         profile: resData[id]
       });
     } catch (err) {
@@ -45,7 +55,6 @@ export const createProfile = (name, bio) => {
       }
     );
     const resData = await response.json();
-    console.log(resData);
     dispatch({
       type: CREATE_PROFILE,
       profileData: {
