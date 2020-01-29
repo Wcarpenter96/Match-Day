@@ -10,6 +10,7 @@ import AuthScreen from "./../screens/Auth";
 import CreateProfileScreen from "../screens/Create";
 import EditProfileScreen from "../screens/Edit";
 import MatchScreen from "../screens/Match";
+import MatchDetailScreen from "../screens/Detail";
 import ChatScreen from "../screens/Chat";
 import Colors from "../constants/Colors";
 
@@ -65,7 +66,8 @@ ProfileNavigator.navigationOptions = {
 
 const MatchNavigator = createStackNavigator(
   {
-    Match: MatchScreen
+    Match: MatchScreen,
+    MatchDetail: MatchDetailScreen
   },
   {
     defaultNavigationOptions: defaultNavOptions
@@ -102,13 +104,16 @@ ChatNavigator.navigationOptions = {
   }
 };
 
-const HomeNavigator = createBottomTabNavigator({
-  Profile: ProfileNavigator,
-  Match: MatchNavigator,
-  Chat: ChatNavigator
-},{
-  initialRouteName: "Match"
-});
+const HomeNavigator = createBottomTabNavigator(
+  {
+    Profile: ProfileNavigator,
+    Match: MatchNavigator,
+    Chat: ChatNavigator
+  },
+  {
+    initialRouteName: "Match"
+  }
+);
 
 // create startup navigator
 const MainNavigator = createSwitchNavigator({

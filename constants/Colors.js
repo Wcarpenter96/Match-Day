@@ -1,4 +1,4 @@
 export default {
     primary: 'pink',
-    accent: 'blue'
+    accent: 'black'
 };

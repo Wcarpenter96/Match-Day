@@ -63,6 +63,7 @@ const Profile = props => {
         <Text>Bio: {profile.bio}</Text>
         <Button
           title="Logout"
+          color={Colors.accent}
           onPress={() => {
             dispatch(authActions.logout());
           }}
@@ -72,7 +73,7 @@ const Profile = props => {
   );
 };
 
-// Sets header title
+
 Profile.navigationOptions = navData => {
   return {
     headerRight: () => (
@@ -94,7 +95,16 @@ const styles = StyleSheet.create({
     padding: 20
   },
   card: {
-    padding: 20
+    height: 600,
+    width: 375,
+    padding: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.primary,
+    shadowColor: 'black',
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
   },
   text: {
     fontSize: 18,

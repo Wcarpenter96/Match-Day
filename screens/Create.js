@@ -182,6 +182,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
+  },
+  text: {
+    fontSize: 18,
+    padding: 10
   }
 });
 
