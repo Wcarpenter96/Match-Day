@@ -4,10 +4,16 @@ import {
   Text,
   Button,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useDispatch, useSelector } from "react-redux";
+// import { ImagePicker } from "expo";
+import * as firebase from "firebase";
+import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
 
 import Card from "../components/Card";
 import * as authActions from "../store/actions/auth";
@@ -48,6 +54,60 @@ const Profile = props => {
     });
   }, [dispatch, loadProfile]);
 
+  const getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    }
+  };
+
+  getPermissionAsync();
+  console.log("getting permission...");
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      console.log("image", result.uri);
+    }
+  };
+
+  const onChooseImagePress = async () => {
+    console.log("Choose Image hit!");
+    // let result = await ImagePicker.launchCameraAsync();
+    let result = await ImagePicker.launchImageLibraryAsync();
+    console.log("result: ", result);
+    if (!result.cancelled) {
+      uploadImage(result.uri, "test-image")
+        .then(() => {
+          Alert.alert("Success!");
+        })
+        .catch(error => {
+          Alert.alert(error);
+        });
+    }
+  };
+
+  const uploadImage = async (uri, imageName) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    var ref = firebase
+      .storage()
+      .ref()
+      .child("images/" + imageName);
+    return ref.put(blob);
+  };
+
   if (isLoading) {
     return (
       <View style={styles.screen}>
@@ -61,6 +121,7 @@ const Profile = props => {
       <Card style={styles.card}>
         <Text>Welcome {profile.name}!</Text>
         <Text>Bio: {profile.bio}</Text>
+        <Button title="Choose image..." onPress={pickImage} />
         <Button
           title="Logout"
           color={Colors.accent}
@@ -73,7 +134,6 @@ const Profile = props => {
   );
 };
 
-
 Profile.navigationOptions = navData => {
   return {
     headerRight: () => (
@@ -84,7 +144,7 @@ Profile.navigationOptions = navData => {
           navData.navigation.navigate("Edit");
         }}
       />
-    ),
+    )
   };
 };
 
@@ -101,10 +161,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.primary,
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOpacity: 0.26,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
+    shadowRadius: 8
   },
   text: {
     fontSize: 18,

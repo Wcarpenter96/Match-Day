@@ -11,6 +11,7 @@ web-build/
 web-report/
 .env
 key.js
+ios/Pods
 
 # macOS
 .DS_Store
