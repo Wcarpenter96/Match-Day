@@ -14,16 +14,21 @@ import * as firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
+import * as FileSystem from "expo-file-system";
 
 import Card from "../components/Card";
 import * as authActions from "../store/actions/auth";
 import * as profileActions from "../store/actions/profile";
 import Colors from "../constants/Colors";
+import { clockRunning } from "react-native-reanimated";
+
+const axios = require("axios");
 
 const Profile = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
+  const [imageUri, setImageUri] = useState("");
 
   const profile = useSelector(state => state.profile.profile);
   const dispatch = useDispatch();
@@ -56,56 +61,48 @@ const Profile = props => {
 
   const getPermissionAsync = async () => {
     if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      const { status } = await Permissions.askAsync(
+        Permissions.CAMERA,
+        Permissions.CAMERA_ROLL
+      );
       if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
+        alert("Sorry, we need camera permissions to make this work!");
       }
     }
   };
 
   getPermissionAsync();
-  console.log("getting permission...");
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      console.log("image", result.uri);
+  uploadImage = async uri => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      var ref = firebase
+        .storage()
+        .ref()
+        .child(`${profile.name}`);
+      return ref.put(blob);
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   };
 
   const onChooseImagePress = async () => {
-    console.log("Choose Image hit!");
-    // let result = await ImagePicker.launchCameraAsync();
-    let result = await ImagePicker.launchImageLibraryAsync();
+    // let result = await ImagePicker.launchCameraAsync({
+    //   allowsEditing: true,
+    //   aspect: [4, 3],
+    //   quality: 1
+    // });
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
+    });
     console.log("result: ", result);
     if (!result.cancelled) {
-      uploadImage(result.uri, "test-image")
-        .then(() => {
-          Alert.alert("Success!");
-        })
-        .catch(error => {
-          Alert.alert(error);
-        });
+      uploadImage(result.uri);
     }
-  };
-
-  const uploadImage = async (uri, imageName) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-
-    var ref = firebase
-      .storage()
-      .ref()
-      .child("images/" + imageName);
-    return ref.put(blob);
   };
 
   if (isLoading) {
@@ -121,7 +118,8 @@ const Profile = props => {
       <Card style={styles.card}>
         <Text>Welcome {profile.name}!</Text>
         <Text>Bio: {profile.bio}</Text>
-        <Button title="Choose image..." onPress={pickImage} />
+        {/* <Image source={{ uri: imageUri }} /> */}
+        <Button title="Choose image..." onPress={onChooseImagePress} />
         <Button
           title="Logout"
           color={Colors.accent}
