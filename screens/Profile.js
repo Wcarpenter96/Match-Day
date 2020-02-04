@@ -5,7 +5,7 @@ import {
   Button,
   StyleSheet,
   ActivityIndicator,
-  Alert
+  Image
 } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +28,9 @@ const Profile = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [imageUri, setImageUri] = useState("");
+  const [imageUri, setImageUri] = useState(
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+  );
 
   const profile = useSelector(state => state.profile.profile);
   const dispatch = useDispatch();
@@ -105,6 +107,17 @@ const Profile = props => {
     }
   };
 
+  const onLoadImagePress = async () => {
+    try {
+      const ref = firebase.storage().ref(`${profile.name}`);
+      const image = await ref.getDownloadURL();
+      console.log(image);
+      setImageUri(image);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={styles.screen}>
@@ -116,10 +129,11 @@ const Profile = props => {
   return (
     <View style={styles.screen}>
       <Card style={styles.card}>
-        <Text>Welcome {profile.name}!</Text>
-        <Text>Bio: {profile.bio}</Text>
-        {/* <Image source={{ uri: imageUri }} /> */}
+        <Image source={{ uri: imageUri }} style={styles.image} />
+        <Text style={styles.title}>{profile.name} </Text>
+        <Text style={styles.text}>{profile.bio}</Text>
         <Button title="Choose image..." onPress={onChooseImagePress} />
+        <Button title="Load image..." onPress={onLoadImagePress} />
         <Button
           title="Logout"
           color={Colors.accent}
@@ -164,9 +178,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8
   },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 100
+  },
   text: {
-    fontSize: 18,
+    fontSize: 20,
     padding: 10
+  },
+  title: {
+    fontSize: 30,
+    padding: 20
   }
 });
 
