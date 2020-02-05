@@ -5,11 +5,12 @@ import {
   Button,
   StyleSheet,
   ActivityIndicator,
-  Image
+  Image,
+  TouchableOpacity
 } from "react-native";
+
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useDispatch, useSelector } from "react-redux";
-// import { ImagePicker } from "expo";
 import * as firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
@@ -19,28 +20,27 @@ import * as FileSystem from "expo-file-system";
 import Card from "../components/Card";
 import * as authActions from "../store/actions/auth";
 import * as profileActions from "../store/actions/profile";
+import * as imageActions from "../store/actions/image";
 import Colors from "../constants/Colors";
-import { clockRunning } from "react-native-reanimated";
-
-const axios = require("axios");
 
 const Profile = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  const [imageUri, setImageUri] = useState(
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-  );
 
   const profile = useSelector(state => state.profile.profile);
   const dispatch = useDispatch();
 
-  // console.log(useSelector(state => state));
+  const id = useSelector(state => state.auth.userId);
+  const image = useSelector(state => state.image.image);
+  console.log(useSelector(state => state));
+
   const loadProfile = useCallback(async () => {
     setError(null);
     setIsRefreshing(true);
     try {
       await dispatch(profileActions.fetchProfiles());
+      await dispatch(imageActions.fetchImage());
     } catch (err) {
       setError(err.message);
     }
@@ -82,7 +82,7 @@ const Profile = props => {
       var ref = firebase
         .storage()
         .ref()
-        .child(`${profile.name}`);
+        .child(`${id}`);
       return ref.put(blob);
     } catch (error) {
       console.log(error);
@@ -91,28 +91,21 @@ const Profile = props => {
   };
 
   const onChooseImagePress = async () => {
-    // let result = await ImagePicker.launchCameraAsync({
-    //   allowsEditing: true,
-    //   aspect: [4, 3],
-    //   quality: 1
-    // });
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1
-    });
-    console.log("result: ", result);
-    if (!result.cancelled) {
-      uploadImage(result.uri);
-    }
-  };
-
-  const onLoadImagePress = async () => {
     try {
-      const ref = firebase.storage().ref(`${profile.name}`);
-      const image = await ref.getDownloadURL();
-      console.log(image);
-      setImageUri(image);
+      // let result = await ImagePicker.launchCameraAsync({
+      //   allowsEditing: true,
+      //   aspect: [4, 3],
+      //   quality: 1
+      // });
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1
+      });
+      console.log("result: ", result);
+      if (!result.cancelled) {
+        uploadImage(result.uri);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -129,11 +122,15 @@ const Profile = props => {
   return (
     <View style={styles.screen}>
       <Card style={styles.card}>
-        <Image source={{ uri: imageUri }} style={styles.image} />
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(imageActions.uploadImage('library'));
+          }}
+        >
+          <Image source={{ uri: image }} style={styles.imageContainer} />
+        </TouchableOpacity>
         <Text style={styles.title}>{profile.name} </Text>
         <Text style={styles.text}>{profile.bio}</Text>
-        <Button title="Choose image..." onPress={onChooseImagePress} />
-        <Button title="Load image..." onPress={onLoadImagePress} />
         <Button
           title="Logout"
           color={Colors.accent}
@@ -178,7 +175,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8
   },
-  image: {
+  imageContainer: {
     width: 200,
     height: 200,
     borderRadius: 100
