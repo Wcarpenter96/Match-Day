@@ -43,22 +43,24 @@ export const fetchImages = () => {
 export const uploadImage = method => {
   return async (dispatch, getState) => {
     const id = getState().auth.userId;
+    let result;
+    console.log('upload Image action hit')
     try {
-      //   let result;
-      //   if (method === "camera") {
-      //     result = await ImagePicker.launchImageLibraryAsync({
-      //       allowsEditing: true,
-      //       aspect: [4, 3],
-      //       quality: 1
-      //     });
-      //   } else {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1
-      });
-      //   }
+      if (method === "camera") {
+        result = await ImagePicker.launchCameraAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1
+        });
+      } else {
+        result = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1
+        });
+      }
       const image = result.uri;
+      console.log(image)
       const response = await fetch(image);
       const blob = await response.blob();
       var ref = firebase

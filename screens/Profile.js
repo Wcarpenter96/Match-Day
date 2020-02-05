@@ -6,7 +6,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableHighlight,
+  Modal
 } from "react-native";
 
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -27,17 +29,19 @@ const Profile = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const profile = useSelector(state => state.profile.profile);
   const dispatch = useDispatch();
 
   const id = useSelector(state => state.auth.userId);
   const image = useSelector(state => state.image.image);
-  console.log(useSelector(state => state));
+  // console.log(useSelector(state => state));
 
   const loadProfile = useCallback(async () => {
     setError(null);
     setIsRefreshing(true);
+    getPermissionAsync();
     try {
       await dispatch(profileActions.fetchProfiles());
       await dispatch(imageActions.fetchImage());
@@ -46,6 +50,18 @@ const Profile = props => {
     }
     setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
+
+  const getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(
+        Permissions.CAMERA,
+        Permissions.CAMERA_ROLL
+      );
+      if (status !== "granted") {
+        alert("Sorry, we need camera permissions to make this work!");
+      }
+    }
+  };
 
   useEffect(() => {
     const willFocusSub = props.navigation.addListener("willFocus", loadProfile);
@@ -61,51 +77,10 @@ const Profile = props => {
     });
   }, [dispatch, loadProfile]);
 
-  const getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(
-        Permissions.CAMERA,
-        Permissions.CAMERA_ROLL
-      );
-      if (status !== "granted") {
-        alert("Sorry, we need camera permissions to make this work!");
-      }
-    }
-  };
-
-  getPermissionAsync();
-
-  uploadImage = async uri => {
+  const uploadImageHandler = async method => {
     try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      var ref = firebase
-        .storage()
-        .ref()
-        .child(`${id}`);
-      return ref.put(blob);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-
-  const onChooseImagePress = async () => {
-    try {
-      // let result = await ImagePicker.launchCameraAsync({
-      //   allowsEditing: true,
-      //   aspect: [4, 3],
-      //   quality: 1
-      // });
-      let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1
-      });
-      console.log("result: ", result);
-      if (!result.cancelled) {
-        uploadImage(result.uri);
-      }
+      await dispatch(imageActions.uploadImage(method));
+      setModalVisible(false);
     } catch (error) {
       console.log(error);
     }
@@ -124,7 +99,7 @@ const Profile = props => {
       <Card style={styles.card}>
         <TouchableOpacity
           onPress={() => {
-            dispatch(imageActions.uploadImage('library'));
+            setModalVisible(true);
           }}
         >
           <Image source={{ uri: image }} style={styles.imageContainer} />
@@ -139,6 +114,38 @@ const Profile = props => {
           }}
         />
       </Card>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        style={styles.modalContainer}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modal}>
+            <TouchableOpacity
+              onPress={() => {
+                uploadImageHandler("camera");
+              }}
+            >
+              <Text style={styles.text}>Take Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                uploadImageHandler("library");
+              }}
+            >
+              <Text style={styles.text}>Choose Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(false);
+              }}
+            >
+              <Text style={styles.text}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -187,6 +194,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     padding: 20
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  modal: {
+    flex: 0.3,
+    height: 100,
+    width: 300,
+    padding: 30,
+    backgroundColor: "white",
+    borderRadius: 20,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 
