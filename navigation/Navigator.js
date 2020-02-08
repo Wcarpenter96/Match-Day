@@ -11,6 +11,7 @@ import CreateProfileScreen from "../screens/Create";
 import EditProfileScreen from "../screens/Edit";
 import MatchScreen from "../screens/Match";
 import MatchDetailScreen from "../screens/Detail";
+import LocationScreen from "../screens/Location";
 import ChatScreen from "../screens/Chat";
 import Colors from "../constants/Colors";
 
@@ -67,7 +68,8 @@ ProfileNavigator.navigationOptions = {
 const MatchNavigator = createStackNavigator(
   {
     Match: MatchScreen,
-    MatchDetail: MatchDetailScreen
+    MatchDetail: MatchDetailScreen,
+    Location: LocationScreen
   },
   {
     defaultNavigationOptions: defaultNavOptions

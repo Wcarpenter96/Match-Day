@@ -156,6 +156,20 @@ const Match = props => {
   );
 };
 
+Match.navigationOptions = navData => {
+  return {
+    headerRight: () => (
+      <FontAwesome5
+        style={styles.text}
+        name={"location-arrow"}
+        onPress={() => {
+          navData.navigation.navigate("Location");
+        }}
+      />
+    )
+  };
+};
+
 const styles = StyleSheet.create({
   screen: {
     flexDirection: "column",
