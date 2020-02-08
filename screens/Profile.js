@@ -36,7 +36,7 @@ const Profile = props => {
 
   const id = useSelector(state => state.auth.userId);
   const image = useSelector(state => state.image.image);
-  console.log(useSelector(state => state));
+  // console.log(useSelector(state => state));
 
   const loadProfile = useCallback(async () => {
     setError(null);

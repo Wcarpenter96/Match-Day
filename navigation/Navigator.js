@@ -17,12 +17,12 @@ import Colors from "../constants/Colors";
 // set up default navigation options
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: Colors.primary
+    backgroundColor: Colors.secondary
   },
   headerTitleStyle: {
     fontFamily: "Helvetica-Bold"
   },
-  headerTintColor: Colors.secondary
+  headerTintColor: Colors.accent
 };
 
 // create login navigator

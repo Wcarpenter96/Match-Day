@@ -31,13 +31,11 @@ export const fetchImages = () => {
     }
 
     const profiles = getState().profile.profiles;
-    console.log("profiles", profiles);
     const images = [];
     const image = getState().image.image;
 
     try {
       await asyncForEach(profiles, async profile => {
-        console.log(profile.image);
         if (profile.image) {
           let ref = firebase.storage().ref(profile.id);
           url = await ref.getDownloadURL();

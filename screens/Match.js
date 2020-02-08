@@ -25,8 +25,6 @@ const Match = props => {
 
   const profiles = useSelector(state => state.profile.profiles);
   const images = useSelector(state => state.image.images);
-  console.log(images);
-
   const dispatch = useDispatch();
 
   const loadProfiles = useCallback(async () => {
@@ -59,12 +57,14 @@ const Match = props => {
     });
   }, [dispatch, loadProfiles]);
 
-  const openProfileHandler = index => {
-    const profile = profiles[index];
-    console.log(profile.name);
+  const openProfileHandler = profileIndex => {
+    const profile = profiles[profileIndex];
+    const imageIndex = images.findIndex(image => image.id == profile.id);
+    const url = images[imageIndex].url;
     props.navigation.navigate("MatchDetail", {
       profileId: profile.id,
-      profileName: profile.name
+      profileName: profile.name,
+      imageUrl: url
     });
   };
 
