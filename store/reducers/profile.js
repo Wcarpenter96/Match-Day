@@ -22,7 +22,8 @@ export default (state = initialState, action) => {
       const newProfile = new Profile(
         action.profileData.id,
         action.profileData.name,
-        action.profileData.bio
+        action.profileData.bio,
+        false,
       );
       const newProfiles = [...state.profiles];
       newProfiles.push(newProfile);
@@ -37,7 +38,8 @@ export default (state = initialState, action) => {
       const updatedProfile = new Profile(
         action.profileData.id,
         action.profileData.name,
-        action.profileData.bio
+        action.profileData.bio,
+        action.profileData.image
       );
 
       const updatedProfiles = [...state.profiles];

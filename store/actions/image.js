@@ -24,11 +24,30 @@ export const fetchImage = () => {
 
 export const fetchImages = () => {
   return async (dispatch, getState) => {
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
+
     const profiles = getState().profile.profiles;
+    console.log("profiles", profiles);
+    const images = [];
+    const image = getState().image.image;
+
     try {
-      const images = [];
-      const image = getState().image.image;
-      console.log(profiles);
+      await asyncForEach(profiles, async profile => {
+        console.log(profile.image);
+        if (profile.image) {
+          let ref = firebase.storage().ref(profile.id);
+          url = await ref.getDownloadURL();
+        } else {
+          url =
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+        }
+        let imageObject = { id: profile.id, url: url };
+        images.push(imageObject);
+      });
       dispatch({
         type: SET,
         image: image,
@@ -44,7 +63,6 @@ export const uploadImage = method => {
   return async (dispatch, getState) => {
     const id = getState().auth.userId;
     let result;
-    console.log('upload Image action hit')
     try {
       if (method === "camera") {
         result = await ImagePicker.launchCameraAsync({
@@ -60,7 +78,6 @@ export const uploadImage = method => {
         });
       }
       const image = result.uri;
-      console.log(image)
       const response = await fetch(image);
       const blob = await response.blob();
       var ref = firebase
@@ -71,10 +88,13 @@ export const uploadImage = method => {
       updatedImage = {};
       updatedImage.id = id;
       updatedImage.url = image;
-      console.log(updatedImage);
       const updatedImages = getState().image.images;
-      //   const imageIndex = images.findIndex(image => image.id == id);
-      //   updatedImages[imageIndex] = updatedImage;
+      const imageIndex = updatedImages.findIndex(image => image.id == id);
+      if (imageIndex === -1) {
+        updatedImages.push(updatedImage);
+      } else {
+        updatedImages[imageIndex] = updatedImage;
+      }
       dispatch({
         type: UPDATE,
         image: image,

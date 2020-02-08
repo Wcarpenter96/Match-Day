@@ -6,13 +6,15 @@ import {
   Button,
   Text,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import CardStack, { Card } from "react-native-card-stack-swiper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 import * as profileActions from "../store/actions/profile";
+import * as imageActions from "../store/actions/image";
 import Colors from "../constants/Colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -20,7 +22,11 @@ const Match = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
+
   const profiles = useSelector(state => state.profile.profiles);
+  const images = useSelector(state => state.image.images);
+  console.log(images);
+
   const dispatch = useDispatch();
 
   const loadProfiles = useCallback(async () => {
@@ -28,8 +34,10 @@ const Match = props => {
     setIsRefreshing(true);
     try {
       await dispatch(profileActions.fetchProfiles());
+      await dispatch(imageActions.fetchImages());
     } catch (err) {
       setError(err.message);
+      console.log(err);
     }
     setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
@@ -58,6 +66,20 @@ const Match = props => {
       profileId: profile.id,
       profileName: profile.name
     });
+  };
+
+  const renderImage = id => {
+    if (images.length > 0 && !isLoading && !isRefreshing) {
+      const index = images.findIndex(image => image.id == id);
+      const url = images[index].url;
+      return <Image source={{ uri: url }} style={styles.imageContainer} />;
+    } else {
+      return (
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      );
+    }
   };
 
   if (error) {
@@ -101,8 +123,9 @@ const Match = props => {
         >
           {profiles.map((profile, index) => (
             <Card style={styles.card} key={index}>
-              <Text>{profile.name}</Text>
-              <Text>{profile.bio}</Text>
+              {renderImage(profile.id)}
+              <Text style={styles.title}>{profile.name}</Text>
+              <Text style={styles.text}>{profile.bio}</Text>
             </Card>
           ))}
         </CardStack>
@@ -153,15 +176,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.primary,
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOpacity: 0.26,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-
+    shadowRadius: 8
   },
   text: {
     fontSize: 18,
     padding: 10
+  },
+  title: {
+    fontSize: 30,
+    padding: 20
   },
   iconContainer: {
     flexDirection: "row",
@@ -171,6 +197,11 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 50,
     padding: 20
+  },
+  imageContainer: {
+    width: 200,
+    height: 200,
+    borderRadius: 100
   }
 });
 

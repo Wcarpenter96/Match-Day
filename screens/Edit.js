@@ -82,7 +82,8 @@ const EditProfile = props => {
       await dispatch(
         profileActions.updateProfile(
           formState.inputValues.name,
-          formState.inputValues.bio
+          formState.inputValues.bio,
+          editedProfile.image
         )
       );
       props.navigation.goBack();

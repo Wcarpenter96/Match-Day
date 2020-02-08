@@ -21,9 +21,12 @@ export const fetchProfiles = () => {
         const newProfile = new Profile(
           rawProfiles[i][0],
           rawProfiles[i][1].name,
-          rawProfiles[i][1].bio
+          rawProfiles[i][1].bio,
+          rawProfiles[i][1].image
         );
-        profiles.push(newProfile);
+        if (newProfile.id != id) {
+          profiles.push(newProfile);
+        }
       }
 
       dispatch({
@@ -66,7 +69,7 @@ export const createProfile = (name, bio) => {
   };
 };
 
-export const updateProfile = (name, bio) => {
+export const updateProfile = (name, bio, image) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const id = getState().auth.userId;
@@ -79,7 +82,8 @@ export const updateProfile = (name, bio) => {
         },
         body: JSON.stringify({
           name,
-          bio
+          bio,
+          image
         })
       }
     );
@@ -91,7 +95,8 @@ export const updateProfile = (name, bio) => {
       profileData: {
         id,
         name,
-        bio
+        bio,
+        image
       }
     });
   };
