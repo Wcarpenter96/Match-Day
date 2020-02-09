@@ -41,8 +41,8 @@ const Profile = props => {
   const loadProfile = useCallback(async () => {
     setError(null);
     setIsRefreshing(true);
-    getPermissionAsync();
     try {
+      await getPermissionAsync();
       await dispatch(profileActions.fetchProfiles());
       await dispatch(imageActions.fetchImage());
     } catch (err) {
@@ -130,21 +130,21 @@ const Profile = props => {
                 uploadImageHandler("camera");
               }}
             >
-              <Text style={styles.text}>Take Photo</Text>
+              <Text style={{...styles.text, color: Colors.accent}}>Take Photo</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 uploadImageHandler("library");
               }}
             >
-              <Text style={styles.text}>Choose Photo</Text>
+              <Text style={{...styles.text, color: Colors.accent}}>Choose Photo</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
               }}
             >
-              <Text style={styles.text}>Cancel</Text>
+              <Text style={{...styles.text, color: Colors.accent}}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -157,7 +157,8 @@ Profile.navigationOptions = navData => {
   return {
     headerRight: () => (
       <FontAwesome5
-        style={styles.text}
+        solid
+        style={{ fontSize: 20, padding: 10, color: Colors.primary }}
         name={"edit"}
         onPress={() => {
           navData.navigation.navigate("Edit");
@@ -171,7 +172,8 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: "center",
-    padding: 20
+    padding: 20,
+    backgroundColor: Colors.accent
   },
   card: {
     height: 600,
@@ -179,7 +181,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.secondary,
     shadowColor: "black",
     shadowOpacity: 0.26,
     shadowOffset: { width: 0, height: 2 },
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    padding: 10
+    padding: 10,
   },
   title: {
     fontSize: 30,

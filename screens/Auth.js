@@ -6,7 +6,8 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ActivityIndicator,
-  Alert
+  Alert,
+  Text
 } from "react-native";
 import { useDispatch } from "react-redux";
 
@@ -127,6 +128,7 @@ const Auth = props => {
       keyboardVerticalOffset={50}
       style={styles.screen}
     >
+      <Text style={styles.title}>Match Day</Text>
       {/* Uses customized "Card" component */}
       <Card style={styles.authContainer}>
         <ScrollView>
@@ -161,7 +163,7 @@ const Auth = props => {
             ) : (
               <Button
                 title={isSignup ? "Sign Up" : "Login"}
-                color={Colors.primary}
+                color={Colors.accent}
                 onPress={authHandler}
               />
             )}
@@ -183,7 +185,7 @@ const Auth = props => {
 
 // Sets header title
 Auth.navigationOptions = {
-  headerTitle: "Authenticate"
+  headerShown: false,
 };
 
 // CSS-like style for the Authentication screen
@@ -191,7 +193,14 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: Colors.accent
+  },
+  title: {
+    fontSize: 50,
+    padding: 40,
+    fontWeight: 'bold',
+    color: Colors.primary
   },
   authContainer: {
     width: "80%",

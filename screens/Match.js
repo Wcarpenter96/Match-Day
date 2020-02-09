@@ -12,6 +12,8 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import CardStack, { Card } from "react-native-card-stack-swiper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import * as Permissions from "expo-permissions";
+import Constants from "expo-constants";
 
 import * as profileActions from "../store/actions/profile";
 import * as imageActions from "../store/actions/image";
@@ -31,6 +33,7 @@ const Match = props => {
     setError(null);
     setIsRefreshing(true);
     try {
+      await getPermissionAsync();
       await dispatch(profileActions.fetchProfiles());
       await dispatch(imageActions.fetchImages());
     } catch (err) {
@@ -39,6 +42,15 @@ const Match = props => {
     }
     setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
+
+  const getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== "granted") {
+        alert("Sorry, we need location permissions to make this work!");
+      }
+    }
+  };
 
   useEffect(() => {
     const willFocusSub = props.navigation.addListener(
@@ -118,7 +130,9 @@ const Match = props => {
           loop={true}
           disableBottomSwipe={true}
           renderNoMoreCards={() => null}
-          ref={swiper => (this.swiper = swiper)}
+          ref={swiper => {
+            this.swiper = swiper;
+          }}
           onSwipedTop={index => openProfileHandler(index)}
         >
           {profiles.map((profile, index) => (
@@ -160,13 +174,14 @@ Match.navigationOptions = navData => {
   return {
     headerRight: () => (
       <FontAwesome5
-        style={styles.text}
-        name={"location-arrow"}
+        style={{fontSize: 24,
+          padding: 10, color: Colors.primary}}
+        name={"search-location"}
         onPress={() => {
           navData.navigation.navigate("Location");
         }}
       />
-    )
+    ),
   };
 };
 
@@ -174,7 +189,8 @@ const styles = StyleSheet.create({
   screen: {
     flexDirection: "column",
     justifyContent: "flex-start",
-    flex: 1
+    flex: 1,
+    backgroundColor: Colors.accent
   },
   cardContainer: {
     height: 600,
@@ -189,11 +205,12 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.secondary,
     shadowColor: "black",
     shadowOpacity: 0.26,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8
+    shadowRadius: 8,
+    borderRadius: 10,
   },
   text: {
     fontSize: 18,
@@ -210,7 +227,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 50,
-    padding: 20
+    padding: 20,
+    color: Colors.primary
   },
   imageContainer: {
     width: 200,

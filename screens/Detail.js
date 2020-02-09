@@ -29,8 +29,9 @@ const MatchDetail = props => {
         >
           <View style={styles.messageButton}>
             <FontAwesome5
-              style={{ fontSize: 35, padding: 10 }}
-              name={"comment-medical"}
+              style={{ fontSize: 35, padding: 10, color: Colors.primary}}
+              name={"comments"}
+              solid
             />
           </View>
           <View style={styles.titleContainer}>
@@ -54,7 +55,7 @@ const MatchDetail = props => {
 
 MatchDetail.navigationOptions = navData => {
   return {
-    headerTitle: navData.navigation.getParam("profileName")
+    headerTitle: `${navData.navigation.getParam("profileName")}'s Profile`
   };
 };
 
@@ -63,30 +64,39 @@ const styles = StyleSheet.create({
     flex: 1
   },
   container: {
-    margin: 10,
     backgroundColor: Colors.secondary
   },
   imageContainer: {
     height: "100%",
     width: "100%",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   messageButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.accent,
     alignSelf: 'flex-end',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 20
+    margin: 20,
+    shadowColor: 'black',
+    shadowOpacity: 1,
+    shadowOffset: { width: 100, height: 100 },
+    shadowRadius: 100,
   },
   titleContainer: {
-    backgroundColor: Colors.primary
+    backgroundColor: Colors.accent,
+    shadowColor: 'black',
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
   },
   title: {
     fontSize: 30,
-    padding: 20
+    padding: 20,
+    color: Colors.primary,
+    fontWeight: 'bold'
   },
   text: {
     fontSize: 20,

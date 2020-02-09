@@ -18,12 +18,12 @@ import Colors from "../constants/Colors";
 // set up default navigation options
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: Colors.secondary
+    backgroundColor: Colors.accent
   },
   headerTitleStyle: {
     fontFamily: "Helvetica-Bold"
   },
-  headerTintColor: Colors.accent
+  headerTintColor: Colors.primary
 };
 
 // create login navigator
@@ -58,10 +58,13 @@ const ProfileNavigator = createStackNavigator(
 
 ProfileNavigator.navigationOptions = {
   tabBarIcon: (
-    <FontAwesome5 style={{ fontSize: 30, padding: 10 }} name={"user-md"} />
+    <FontAwesome5 style={{ fontSize: 30, padding: 10, color: Colors.primary}} name={"user-md"} />
   ),
   tabBarOptions: {
-    showLabel: false
+    showLabel: false,
+    style: {
+      backgroundColor: Colors.accent
+    },
   }
 };
 
@@ -78,10 +81,13 @@ const MatchNavigator = createStackNavigator(
 
 MatchNavigator.navigationOptions = {
   tabBarIcon: (
-    <FontAwesome5 style={{ fontSize: 30, padding: 10 }} name={"heartbeat"} />
+    <FontAwesome5 style={{ fontSize: 30, padding: 10, color: Colors.primary }} name={"heartbeat"} />
   ),
   tabBarOptions: {
-    showLabel: false
+    showLabel: false,
+    style: {
+      backgroundColor: Colors.accent
+    }
   }
 };
 
@@ -97,12 +103,15 @@ const ChatNavigator = createStackNavigator(
 ChatNavigator.navigationOptions = {
   tabBarIcon: (
     <FontAwesome5
-      style={{ fontSize: 30, padding: 10 }}
+      style={{ fontSize: 30, padding: 10, color: Colors.primary }}
       name={"comment-medical"}
     />
   ),
   tabBarOptions: {
-    showLabel: false
+    showLabel: false,
+    style: {
+      backgroundColor: Colors.accent
+    }
   }
 };
 
@@ -113,7 +122,7 @@ const HomeNavigator = createBottomTabNavigator(
     Chat: ChatNavigator
   },
   {
-    initialRouteName: "Match"
+    initialRouteName: "Match",
   }
 );
 
